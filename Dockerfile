@@ -1,5 +1,15 @@
 # syntax=docker/dockerfile:1
 
+FROM node:22-slim AS frontend-builder
+
+WORKDIR /frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+COPY frontend/ ./
+RUN npm run build
+
 FROM python:3.11-slim-bookworm
 
 ARG VOICE_MODEL=mo-thecreator/Deepfake-audio-detection
@@ -35,7 +45,8 @@ RUN python -m pip install --upgrade pip setuptools wheel \
 # startup deterministic and avoids a 378 MB download on every cold boot.
 RUN python -c "import os; from transformers import AutoFeatureExtractor, AutoModelForAudioClassification; model_id = os.environ['VOICE_MODEL']; AutoFeatureExtractor.from_pretrained(model_id); AutoModelForAudioClassification.from_pretrained(model_id, use_safetensors=True)"
 
-COPY main.py index.html ./
+COPY main.py ./
+COPY --from=frontend-builder /frontend/dist ./frontend/dist
 
 RUN useradd --create-home --uid 10001 voxguard \
     && chown -R voxguard:voxguard /app /opt/huggingface

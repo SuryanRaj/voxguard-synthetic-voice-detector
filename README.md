@@ -37,7 +37,7 @@
 
 ## 🏗️ System Architecture
 
-1.  **Client-Side (Browser):** Handles audio ingestion (MediaStream API / File API), raw PCM extraction, and frontend visualizations. No inference happens in the browser.
+1.  **React Client:** Handles audio ingestion (MediaStream API / File API), raw PCM extraction, and responsive frontend visualizations. No inference happens in the browser.
 2.  **Transport Layer:** Standard HTTP POST requests carrying raw binary `application/octet-stream` payloads with custom headers (`X-Audio-Sample-Rate`).
 3.  **FastAPI Backend:** Asynchronous request handling, concurrency locking (ensuring GPU/CPU isn't overwhelmed by simultaneous requests).
 4.  **Audio Preprocessing:** Normalization, signal-to-noise floor gating (RMS > 0.0035), and Librosa resampling.
@@ -52,7 +52,7 @@
 | **Backend Framework** | Python 3, FastAPI, Uvicorn |
 | **Machine Learning** | PyTorch, Hugging Face `transformers` |
 | **Audio Processing** | `librosa`, `numpy`, `soundfile` |
-| **Frontend UI** | HTML5, JavaScript (ES6+), TailwindCSS (CDN) |
+| **Frontend UI** | React, TypeScript, Vite, Tailwind CSS, shadcn/ui |
 
 ---
 
@@ -78,18 +78,28 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+### 3. Install Backend Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the Server
-Start the Uvicorn ASGI server to run the FastAPI application.
+### 4. Build the React Frontend
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+### 5. Run the Server
+Start Uvicorn. FastAPI serves both the API and the compiled React frontend.
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### 5. Access the Application
+For frontend development with hot reload, run `npm run dev` inside `frontend/` in a second terminal. Vite proxies API requests to FastAPI on port 8000.
+
+### 6. Access the Application
 Open your web browser and navigate to:
 👉 **`http://localhost:8000`**
 

@@ -11,7 +11,8 @@ import librosa
 import numpy as np
 import torch
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 from transformers import AutoFeatureExtractor, AutoModelForAudioClassification
 
 
@@ -21,7 +22,9 @@ from transformers import AutoFeatureExtractor, AutoModelForAudioClassification
 
 APP_TITLE = "VOXGUARD — Synthetic Voice Detector"
 BASE_DIR = Path(__file__).resolve().parent
-INDEX_FILE = BASE_DIR / "index.html"
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
+INDEX_FILE = FRONTEND_DIST / "index.html"
+FRONTEND_ASSETS = FRONTEND_DIST / "assets"
 
 # This is the same detector that was successfully loading in your
 # previous working build. Its current Hugging Face config exposes
@@ -67,6 +70,13 @@ FAKE_THRESHOLD = 0.70
 REAL_THRESHOLD = 0.30
 
 app = FastAPI(title=APP_TITLE)
+
+if FRONTEND_ASSETS.is_dir():
+    app.mount(
+        "/assets",
+        StaticFiles(directory=FRONTEND_ASSETS),
+        name="frontend-assets",
+    )
 
 DEVICE = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
@@ -606,17 +616,18 @@ def analyze_recording(
 # HTTP ROUTES
 # ============================================================
 
-@app.get("/", response_class=HTMLResponse)
-async def get_frontend() -> HTMLResponse:
+@app.get("/", response_class=FileResponse)
+async def get_frontend() -> Response:
     if not INDEX_FILE.exists():
         return HTMLResponse(
-            "index.html not found beside main.py",
+            (
+                "React frontend build not found. Run "
+                "`npm install && npm run build` inside frontend/."
+            ),
             status_code=500,
         )
 
-    return HTMLResponse(
-        INDEX_FILE.read_text(encoding="utf-8")
-    )
+    return FileResponse(INDEX_FILE)
 
 
 @app.get("/health")
