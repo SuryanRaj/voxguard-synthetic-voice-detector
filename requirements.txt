@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+numpy
+librosa
+soundfile
+torch
+transformers>=4.39,<5.0
+huggingface_hub
+protobuf
