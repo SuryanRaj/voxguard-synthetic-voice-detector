@@ -116,7 +116,7 @@ function MetricRow({
 }) {
   return (
     <div className="metric-row grid grid-cols-[auto_1fr_auto] items-center gap-3 py-2.5 sm:py-3">
-      <div className="grid size-9 place-items-center rounded-lg border bg-muted/45 text-muted-foreground">
+      <div className="grid size-9 place-items-center rounded-[10px] border border-white/10 bg-[#2c2c2e] text-muted-foreground">
         <Icon className="size-4" />
       </div>
       <div className="min-w-0">
@@ -124,7 +124,7 @@ function MetricRow({
           {label}
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="text-muted-foreground transition-colors hover:text-foreground" aria-label={`About ${label}`}>
+              <button className="-my-2 grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`About ${label}`}>
                 <CircleHelp className="size-3.5" />
               </button>
             </TooltipTrigger>
@@ -368,7 +368,7 @@ function App() {
       if (phase === "capturing" && analyser) {
         const samples = new Uint8Array(analyser.fftSize)
         analyser.getByteTimeDomainData(samples)
-        context.strokeStyle = "rgba(129, 140, 248, 0.95)"
+        context.strokeStyle = "rgba(10, 132, 255, 0.95)"
         context.lineWidth = 2
         context.beginPath()
         samples.forEach((sample, index) => {
@@ -381,7 +381,7 @@ function App() {
       } else {
         const bars = Math.max(36, Math.floor(bounds.width / 10))
         const gap = bounds.width / bars
-        context.strokeStyle = "rgba(148, 163, 184, 0.26)"
+        context.strokeStyle = "rgba(161, 161, 166, 0.28)"
         context.lineWidth = 2
         context.lineCap = "round"
         for (let index = 0; index < bars; index += 1) {
@@ -498,28 +498,28 @@ function App() {
     if (!result) return {
       icon: AudioLines,
       color: "text-muted-foreground",
-      surface: "bg-muted/35",
+      surface: "bg-[#2c2c2e]",
       label: "Waiting for a sample",
       description: "Record your voice or upload an audio file to begin.",
     }
     if (result.state === "real") return {
       icon: ShieldCheck,
-      color: "text-emerald-400",
-      surface: "bg-emerald-500/10",
+      color: "text-[#30d158]",
+      surface: "border-[#30d158]/20 bg-[#30d158]/10",
       label: result.status,
       description: result.detail,
     }
     if (result.state === "synthetic") return {
       icon: ShieldAlert,
-      color: "text-rose-400",
-      surface: "bg-rose-500/10",
+      color: "text-[#ff453a]",
+      surface: "border-[#ff453a]/20 bg-[#ff453a]/10",
       label: result.status,
       description: result.detail,
     }
     return {
       icon: AlertTriangle,
-      color: "text-amber-400",
-      surface: "bg-amber-500/10",
+      color: "text-[#ff9f0a]",
+      surface: "border-[#ff9f0a]/20 bg-[#ff9f0a]/10",
       label: result.status,
       description: result.detail,
     }
@@ -530,42 +530,42 @@ function App() {
   const fakeProbability = result?.fake_probability ?? null
   const confidence = result?.confidence ?? null
   const progressClass = result?.state === "real"
-    ? "[&_[data-slot=progress-indicator]]:bg-emerald-400"
+    ? "[&_[data-slot=progress-indicator]]:bg-[#30d158]"
     : result?.state === "synthetic"
-      ? "[&_[data-slot=progress-indicator]]:bg-rose-400"
-      : "[&_[data-slot=progress-indicator]]:bg-amber-400"
+      ? "[&_[data-slot=progress-indicator]]:bg-[#ff453a]"
+      : "[&_[data-slot=progress-indicator]]:bg-[#ff9f0a]"
 
   return (
     <TooltipProvider delayDuration={250}>
       <div className="signal-grid flex h-dvh min-h-0 flex-col overflow-hidden">
-        <header className="shrink-0 border-b bg-background/75 backdrop-blur-xl">
+        <header className="apple-toolbar shrink-0 border-b">
           <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3">
-              <div className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-[0_0_28px_oklch(0.68_0.19_262/0.25)]">
+              <div className="grid size-9 place-items-center rounded-[10px] bg-gradient-to-b from-[#2997ff] to-[#0071e3] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_24px_rgb(0_113_227/0.24)]">
                 <Waves className="size-5" />
               </div>
               <div>
-                <div className="text-sm font-bold tracking-[0.16em]">VOXGUARD</div>
-                <div className="hidden text-[11px] text-muted-foreground sm:block">Synthetic voice intelligence</div>
+                <div className="text-[15px] font-semibold tracking-[-0.02em]">VoxGuard</div>
+                <div className="hidden text-[11px] text-muted-foreground sm:block">Voice authenticity</div>
               </div>
             </div>
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2 bg-card/60">
-                  <span className={cn("size-2 rounded-full", checkingHealth ? "animate-pulse bg-amber-400" : health?.ok ? "bg-emerald-400" : "bg-rose-400")} />
+                <Button variant="outline" size="sm" className="h-11 gap-2 bg-white/5">
+                  <span className={cn("size-2 rounded-full", checkingHealth ? "animate-pulse bg-[#ff9f0a]" : health?.ok ? "bg-[#30d158]" : "bg-[#ff453a]")} />
                   <span className="hidden sm:inline">{checkingHealth ? "Checking system" : health?.ok ? "System ready" : "System unavailable"}</span>
                   <span className="sm:hidden">Status</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent className="border-border/80 bg-background/95 p-0 backdrop-blur-xl">
+              <SheetContent className="apple-toolbar border-white/10 p-0">
                 <SheetHeader className="border-b p-6">
                   <SheetTitle>System status</SheetTitle>
                   <SheetDescription>Detector and analysis-path diagnostics.</SheetDescription>
                 </SheetHeader>
                 <div className="space-y-3 p-6">
-                  <div className="flex items-start gap-3 rounded-xl border bg-card/60 p-4">
-                    <Server className={cn("mt-0.5 size-5", health?.ok ? "text-emerald-400" : "text-rose-400")} />
+                  <div className="apple-inset flex items-start gap-3 rounded-2xl border p-4">
+                    <Server className={cn("mt-0.5 size-5", health?.ok ? "text-[#30d158]" : "text-[#ff453a]")} />
                     <div className="min-w-0">
                       <div className="font-medium">Detector backend</div>
                       <div className="mt-1 break-words text-sm text-muted-foreground">
@@ -573,14 +573,14 @@ function App() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 rounded-xl border bg-card/60 p-4">
+                  <div className="apple-inset flex items-start gap-3 rounded-2xl border p-4">
                     <Activity className="mt-0.5 size-5 text-primary" />
                     <div>
                       <div className="font-medium">Analysis path</div>
                       <div className="mt-1 text-sm text-muted-foreground">One recording, one secure HTTP request.</div>
                     </div>
                   </div>
-                  <div className="rounded-xl border bg-card/60 p-4 text-sm">
+                  <div className="apple-inset rounded-2xl border p-4 text-sm">
                     <div className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Technical details</div>
                     <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-muted-foreground">
                       <dt>Model</dt><dd className="truncate text-right text-foreground">{health?.model || "—"}</dd>
@@ -591,7 +591,7 @@ function App() {
                   </div>
                   <Button variant="secondary" className="w-full" onClick={() => void checkHealth()} disabled={checkingHealth}>
                     <RefreshCw className={cn("size-4", checkingHealth && "animate-spin")} />
-                    Check again
+                    Check Again
                   </Button>
                 </div>
               </SheetContent>
@@ -601,36 +601,32 @@ function App() {
 
         <main className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5">
           <section className="viewport-intro mb-3 shrink-0 sm:mb-4 lg:mb-5">
-            <Badge variant="outline" className="eyebrow mb-2 hidden border-primary/25 bg-primary/8 text-primary sm:inline-flex">
-              <Sparkles className="size-3" />
-              AI voice verification
-            </Badge>
             <h1 className="text-balance text-2xl font-semibold tracking-[-0.04em] sm:text-3xl lg:text-4xl">
-              Verify a voice before you trust it.
+              Check a voice.
             </h1>
             <p className="mt-1.5 max-w-2xl text-pretty text-xs leading-5 text-muted-foreground sm:text-sm">
-              Record a short sample or upload audio. VoxGuard analyzes the complete signal and returns one clear, explainable result.
+              Record or upload audio to look for signs of synthetic speech.
             </p>
           </section>
 
           {error && (
-            <Alert variant="destructive" className="fixed top-16 right-4 left-4 z-40 border-rose-500/30 bg-background/95 shadow-2xl backdrop-blur-xl sm:left-auto sm:max-w-md">
+            <Alert variant="destructive" className="apple-toolbar fixed top-16 right-4 left-4 z-40 border-[#ff453a]/35 shadow-2xl sm:left-auto sm:max-w-md">
               <AlertTriangle />
               <AlertTitle>Analysis needs attention</AlertTitle>
               <AlertDescription className="flex items-center justify-between gap-4">
                 <span>{error}</span>
-                <button aria-label="Dismiss error" onClick={() => setError(null)} className="shrink-0 rounded-md p-1 hover:bg-rose-500/10">
+                <button aria-label="Dismiss error" onClick={() => setError(null)} className="grid size-11 shrink-0 place-items-center rounded-full hover:bg-[#ff453a]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   <X className="size-4" />
                 </button>
               </AlertDescription>
             </Alert>
           )}
 
-          <div className="mb-3 grid h-10 shrink-0 grid-cols-2 rounded-lg bg-muted/70 p-1 lg:hidden">
+          <div className="apple-segmented mb-3 grid h-12 shrink-0 grid-cols-2 rounded-xl p-1 lg:hidden">
             <Button
               variant={mobileView === "analyze" ? "secondary" : "ghost"}
               size="sm"
-              className="h-8"
+              className="h-10"
               onClick={() => setMobileView("analyze")}
             >
               <Mic className="size-4" /> Analyze
@@ -638,21 +634,21 @@ function App() {
             <Button
               variant={mobileView === "result" ? "secondary" : "ghost"}
               size="sm"
-              className="h-8"
+              className="h-10"
               onClick={() => setMobileView("result")}
             >
               <Shield className="size-4" /> Result
-              {result && <span className={cn("size-1.5 rounded-full", result.state === "real" ? "bg-emerald-400" : result.state === "synthetic" ? "bg-rose-400" : "bg-amber-400")} />}
+              {result && <span className={cn("size-1.5 rounded-full", result.state === "real" ? "bg-[#30d158]" : result.state === "synthetic" ? "bg-[#ff453a]" : "bg-[#ff9f0a]")} />}
             </Button>
           </div>
 
           <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)]">
-            <Card className={cn("h-full min-h-0 overflow-hidden border-border/80 bg-card/70 py-0 shadow-2xl shadow-black/10 backdrop-blur-sm lg:flex", mobileView === "analyze" ? "flex" : "hidden")}>
-              <CardHeader className="shrink-0 border-b px-4 py-3 sm:px-5 sm:py-4">
+            <Card className={cn("apple-content-panel h-full min-h-0 overflow-hidden py-0 lg:flex", mobileView === "analyze" ? "flex" : "hidden")}>
+              <CardHeader className="shrink-0 border-b border-white/8 px-4 py-3 sm:px-5 sm:py-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <CardTitle className="text-lg">Analyze audio</CardTitle>
-                    <CardDescription className="panel-description mt-1">Choose how you want to provide the voice sample.</CardDescription>
+                    <CardTitle className="text-lg tracking-[-0.02em]">Audio Sample</CardTitle>
+                    <CardDescription className="panel-description mt-1">Record a new sample or choose a file.</CardDescription>
                   </div>
                   {busy && (
                     <Badge variant="secondary" className="gap-1.5">
@@ -664,7 +660,7 @@ function App() {
               </CardHeader>
               <CardContent className="min-h-0 flex-1 p-3 sm:p-4">
                 <Tabs defaultValue="record" className="h-full min-h-0 gap-3">
-                  <TabsList className="grid h-10 w-full shrink-0 grid-cols-2 bg-muted/70 p-1">
+                  <TabsList className="grid h-11 w-full shrink-0 grid-cols-2 p-1">
                     <TabsTrigger value="record" disabled={phase === "analyzing" || phase === "file"}>
                       <Mic className="size-4" /> Record
                     </TabsTrigger>
@@ -674,18 +670,18 @@ function App() {
                   </TabsList>
 
                   <TabsContent value="record" className="min-h-0">
-                    <div className="capture-surface flex h-full min-h-0 flex-col items-center justify-center rounded-xl border bg-background/35 px-4 py-4 text-center sm:px-6">
-                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Voice capture</div>
+                    <div className="apple-inset capture-surface flex h-full min-h-0 flex-col items-center justify-center rounded-[18px] border px-4 py-4 text-center sm:px-6">
+                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Voice Capture</div>
                       <h2 className="text-lg font-semibold sm:text-xl">
-                        {phase === "capturing" ? (canStop ? "Stop when you’re ready" : "Keep speaking naturally") : phase === "analyzing" ? "Analyzing your recording" : "Record up to 10 seconds"}
+                        {phase === "capturing" ? (canStop ? "Stop When You’re Ready" : "Keep Speaking Naturally") : phase === "analyzing" ? "Analyzing Your Recording" : "Record Up to 10 Seconds"}
                       </h2>
                       <p className="capture-help mt-1 max-w-md text-xs text-muted-foreground sm:text-sm">
-                        {phase === "capturing" ? "The stop control unlocks after the four-second model minimum." : "One capture stays in your browser until it is submitted for analysis."}
+                        {phase === "capturing" ? "Speak for at least 4 seconds, then stop whenever you’re ready." : "Your recording stays in the browser until you submit it for analysis."}
                       </p>
 
                       <button
                         type="button"
-                        className="record-button record-ring mt-5 grid size-28 shrink-0 place-items-center rounded-full border border-primary/50 bg-gradient-to-b from-primary/20 to-primary/8 text-primary transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 disabled:pointer-events-none disabled:opacity-55 sm:size-32 xl:size-36"
+                        className="record-button record-ring mt-5 grid size-28 shrink-0 place-items-center rounded-full border transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 disabled:pointer-events-none disabled:opacity-55 sm:size-32 xl:size-36"
                         data-active={phase === "capturing"}
                         onClick={() => { if (phase !== "capturing") void beginCapture() }}
                         disabled={busy}
@@ -703,11 +699,11 @@ function App() {
                       <div className="mt-3 flex w-full max-w-sm flex-col gap-2 sm:flex-row">
                         {phase === "capturing" ? (
                           <Button className="h-11 flex-1" onClick={() => void finishCapture()} disabled={!canStop}>
-                            <Check className="size-4" /> Stop & analyze
+                            <Check className="size-4" /> Stop &amp; Analyze
                           </Button>
                         ) : (
                           <Button className="h-11 flex-1" onClick={() => void beginCapture()} disabled={busy || health?.ok === false}>
-                            <Mic className="size-4" /> Start recording
+                            <Mic className="size-4" /> Start Recording
                           </Button>
                         )}
                       </div>
@@ -715,7 +711,7 @@ function App() {
                   </TabsContent>
 
                   <TabsContent value="upload" className="min-h-0">
-                    <div className="flex h-full min-h-0 flex-col rounded-xl border bg-background/35 p-3 sm:p-4">
+                    <div className="apple-inset flex h-full min-h-0 flex-col rounded-[18px] border p-3 sm:p-4">
                       <div
                         role="button"
                         tabIndex={0}
@@ -735,11 +731,11 @@ function App() {
                         }}
                         className={cn(
                           "grid min-h-0 flex-1 place-items-center rounded-xl border border-dashed p-5 text-center outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/30",
-                          dragging ? "border-primary bg-primary/8" : "border-border bg-card/35 hover:border-primary/45 hover:bg-card/60",
+                          dragging ? "border-[#0a84ff] bg-[#0a84ff]/8" : "border-white/14 bg-white/[0.025] hover:border-white/25 hover:bg-white/[0.045]",
                         )}
                       >
                         <div>
-                          <div className="mx-auto grid size-14 place-items-center rounded-2xl border bg-muted/50 text-muted-foreground">
+                          <div className="mx-auto grid size-14 place-items-center rounded-2xl border border-white/10 bg-[#2c2c2e] text-muted-foreground">
                             <FileAudio className="size-6" />
                           </div>
                           <div className="mt-3 font-semibold">{selectedFile ? selectedFile.name : "Drop audio here"}</div>
@@ -756,11 +752,11 @@ function App() {
                         className="hidden"
                         onChange={(event) => chooseFile(event.target.files?.[0])}
                       />
-                      {fileStatus && <div className="mt-3 rounded-lg border bg-muted/35 px-3 py-2 text-xs text-muted-foreground">{fileStatus}</div>}
+                      {fileStatus && <div className="mt-3 rounded-xl border border-white/10 bg-[#2c2c2e] px-3 py-2 text-xs text-muted-foreground">{fileStatus}</div>}
                       <div className="mt-3 flex gap-3">
                         <Button className="h-11 flex-1" onClick={() => void analyzeFile()} disabled={!selectedFile || busy || health?.ok === false}>
                           {phase === "file" ? <Loader2 className="size-4 animate-spin" /> : <Activity className="size-4" />}
-                          Analyze file
+                          Analyze File
                         </Button>
                         {selectedFile && (
                           <Button variant="outline" className="h-11" onClick={clearFile} disabled={busy}>Clear</Button>
@@ -772,12 +768,12 @@ function App() {
               </CardContent>
             </Card>
 
-            <Card className={cn("h-full min-h-0 overflow-hidden border-border/80 bg-card/70 py-0 shadow-2xl shadow-black/10 backdrop-blur-sm lg:flex", mobileView === "result" ? "flex" : "hidden")}>
-              <CardHeader className="shrink-0 border-b px-4 py-3 sm:px-5 sm:py-4">
+            <Card className={cn("apple-content-panel h-full min-h-0 overflow-hidden py-0 lg:flex", mobileView === "result" ? "flex" : "hidden")}>
+              <CardHeader className="shrink-0 border-b border-white/8 px-4 py-3 sm:px-5 sm:py-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <CardTitle className="text-lg">Analysis result</CardTitle>
-                    <CardDescription className="panel-description mt-1">Combined evidence across the recording.</CardDescription>
+                    <CardTitle className="text-lg tracking-[-0.02em]">Result</CardTitle>
+                    <CardDescription className="panel-description mt-1">Evidence from the complete sample.</CardDescription>
                   </div>
                   {result && (
                     <Badge variant="outline" className={cn("border-current/20", resultTheme.color)}>
@@ -786,16 +782,16 @@ function App() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="min-h-0 flex-1 p-3 sm:p-4">
-                <div className={cn("result-summary rounded-xl border p-4", resultTheme.surface)}>
-                  <div className={cn("grid size-10 place-items-center rounded-lg border bg-background/45", resultTheme.color)}>
+              <CardContent className="min-h-0 flex-1 p-3 sm:p-4" aria-live="polite">
+                <div className={cn("result-summary rounded-[18px] border p-4", resultTheme.surface)}>
+                  <div className={cn("grid size-10 place-items-center rounded-xl border border-white/10 bg-black/25", resultTheme.color)}>
                     <ResultIcon className="size-5" />
                   </div>
                   <h2 className="mt-3 text-lg font-semibold">{resultTheme.label}</h2>
                   <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground sm:text-sm">{resultTheme.description}</p>
                 </div>
 
-                <div className="trust-panel mt-3 rounded-xl border bg-background/35 p-4">
+                <div className="apple-inset trust-panel mt-3 rounded-[18px] border p-4">
                   <div className="flex items-end justify-between gap-4">
                     <div>
                       <div className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Trust score</div>
