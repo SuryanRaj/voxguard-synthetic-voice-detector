@@ -33,15 +33,16 @@ MODEL_ID = os.getenv(
 
 TARGET_SAMPLE_RATE = 16_000
 
-# LIVE MODE: exactly six seconds are captured in the browser, then one
-# HTTP request is sent. There is no continuous inference loop.
-LIVE_CAPTURE_SECONDS = 6.0
+# LIVE MODE: users can submit after the four-second model minimum, and
+# capture stops automatically at ten seconds. There is no continuous
+# inference loop.
+LIVE_CAPTURE_SECONDS = 10.0
 LIVE_CAPTURE_SAMPLES = int(
     TARGET_SAMPLE_RATE * LIVE_CAPTURE_SECONDS
 )
 
-# The model itself works with 4-second waveform windows. A six-second live
-# recording therefore produces two overlapping windows: 0–4 s and 2–6 s.
+# The model works with 4-second waveform windows. A ten-second live
+# recording produces four overlapping windows: 0–4, 2–6, 4–8, and 6–10 s.
 MODEL_WINDOW_SECONDS = 4.0
 MODEL_WINDOW_SAMPLES = int(
     TARGET_SAMPLE_RATE * MODEL_WINDOW_SECONDS
@@ -638,7 +639,7 @@ async def health() -> JSONResponse:
 
 @app.post("/analyze-live")
 async def analyze_live(request: Request) -> JSONResponse:
-    """Receive exactly one six-second PCM recording and return one result."""
+    """Receive one 4-to-10-second PCM recording and return one result."""
     if not detector_ready():
         return JSONResponse(
             {
@@ -671,14 +672,11 @@ async def analyze_live(request: Request) -> JSONResponse:
             sample_rate,
         )
 
-        # Slice to exactly six seconds after resampling. A tiny callback
-        # overshoot from the browser is intentionally ignored.
-        if len(audio) < int(
-            TARGET_SAMPLE_RATE * 5.5
-        ):
+        # The classifier needs at least one complete four-second window.
+        # A tiny callback overshoot beyond the browser limit is ignored.
+        if len(audio) < MODEL_WINDOW_SAMPLES:
             raise ValueError(
-                "Less than six seconds of microphone audio arrived. "
-                "Please run the capture again."
+                "At least four seconds of microphone audio is required."
             )
 
         audio = audio[:LIVE_CAPTURE_SAMPLES]

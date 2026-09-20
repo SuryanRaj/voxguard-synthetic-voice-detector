@@ -27,7 +27,7 @@
 
 ## ✨ Key Features
 
-*   **🎙️ Live One-Shot Capture:** Utilizes the browser's Web Audio API to capture exactly 6 seconds of microphone audio locally, transmitting a single payload to prevent continuous, resource-heavy inference loops.
+*   **🎙️ Live One-Shot Capture:** Utilizes the browser's Web Audio API to capture 4–10 seconds of microphone audio locally. Users can stop and submit after four seconds, or the recording submits automatically at ten seconds.
 *   **📁 Full-Duration File Analysis:** Upload entire audio files. The engine automatically downmixes, resamples to 16kHz, and evaluates the complete recording using overlapping 4-second windows.
 *   **📊 Transparent Confidence Scoring:** Doesn't just guess. It aggregates evidence across multiple audio windows, generating a final trust score based on model stability, variance, and synthetic probability.
 *   **🛡️ Borderline Protection:** Built with conservative decision boundaries (Fake ≥ 0.70, Real ≤ 0.30) to output "Inconclusive" for ambiguous audio, minimizing false accusations.
@@ -102,7 +102,7 @@ VOXGUARD exposes RESTful endpoints for integration into larger systems:
 *   `GET /health`
     *   Returns the status of the PyTorch model, device assignment (CPU/CUDA), and label mappings.
 *   `POST /analyze-live`
-    *   **Body:** Raw PCM Float32 binary data (Exactly 6 seconds).
+    *   **Body:** Raw PCM Float32 binary data (4–10 seconds).
     *   **Headers:** `X-Audio-Sample-Rate`
     *   **Returns:** JSON payload with `trust_score`, `state`, and `confidence`.
 *   `POST /analyze-file`
